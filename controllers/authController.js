@@ -12,23 +12,36 @@ const signupUser = async (req, res) => {
 
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({
+                success: 0,
+                message: 'User already exists'
+            });
         }
 
         const user = await User.create({ username, email, password });
+
         if (user) {
             res.status(201).json({
+                success: 1,
                 message: 'User created successfully',
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                token: generateToken(user._id)
+                data: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    token: generateToken(user._id)
+                }
             });
         } else {
-            res.status(400).json({ message: 'Invalid user' });
+            res.status(400).json({
+                success: 0,
+                message: 'Invalid user'
+            });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({
+            success: 0,
+            message: 'Server error'
+        });
     }
 };
 
@@ -38,19 +51,29 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
+
         if (user && await user.matchPassword(password)) {
             res.status(200).json({
+                success: 1,
                 message: 'Login successful',
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                token: generateToken(user._id)
+                data: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    token: generateToken(user._id)
+                }
             });
         } else {
-            res.status(401).json({ message: 'Invalid email or password' });
+            res.status(401).json({
+                success: 0,
+                message: 'Invalid email or password'
+            });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({
+            success: 0,
+            message: 'Server error'
+        });
     }
 };
 
@@ -60,19 +83,35 @@ const forgotPassword = async (req, res) => {
         const { email, newPassword } = req.body;
         const user = await User.findOne({ email });
 
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) {
+            return res.status(404).json({
+                success: 0,
+                message: 'User not found'
+            });
+        }
 
         // Check if new password matches old password
         const isSame = await user.matchPassword(newPassword);
-        if (isSame) return res.status(400).json({ message: 'New password must be different from old password' });
+        if (isSame) {
+            return res.status(400).json({
+                success: 0,
+                message: 'New password must be different from old password'
+            });
+        }
 
         // Update password
         user.password = newPassword;
         await user.save();
 
-        res.status(200).json({ message: 'Password updated successfully' });
+        res.status(200).json({
+            success: 1,
+            message: 'Password updated successfully'
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({
+            success: 0,
+            message: 'Server error'
+        });
     }
 };
 
