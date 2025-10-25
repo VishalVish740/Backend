@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const todoRoutes = require('./routes/todo');
+const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 // Middleware
@@ -12,7 +13,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) === -1) {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -29,6 +30,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/todos', todoRoutes);
+app.use('/api/users', authRoutes);
 
 // Error handler
 app.use(errorHandler);

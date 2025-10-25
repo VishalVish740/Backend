@@ -1,13 +1,13 @@
 // api routes handler for todo items
 
 const express = require('express');
-const todoController = require('../controllers/todo');
-
 const router = express.Router();
+const todoController = require('../controllers/todo');
+const protect = require('../middleware/authMiddleware');
 
-router.get('/', todoController.getTodos);
-router.post('/', todoController.createTodos);
-router.put('/:id', todoController.updateTodos);
-router.delete('/:id', todoController.deleteTodos);
+router.get('/', protect, todoController.getTodos);
+router.post('/', protect, todoController.createTodos);
+router.put('/:id', protect, todoController.updateTodos);
+router.delete('/:id', protect, todoController.deleteTodos);
 
 module.exports = router;
