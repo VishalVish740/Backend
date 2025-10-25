@@ -9,7 +9,8 @@ const errorHandler = require('./middleware/errorHandler');
 // Middleware
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://todo-frontend-tau-blush.vercel.app'
+    // 'https://todo-frontend-tau-blush.vercel.app'
+    'https://todoappbyme.vercel.app'
 ];
 
 app.use(cors({
